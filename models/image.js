@@ -4,10 +4,10 @@ const imageSchema = mongoose.Schema({
   url: { type: String, required: true },
   title: String,
   notes: String,
-  tags: String,
+  tags: [String],
   artist: String,
   uploader: String,
-  uploadDate: Date
+  uploadDate: { type: Date, set: d => new Date(d) } // epoch time
 });
 
 const Image = mongoose.model('Image', imageSchema);

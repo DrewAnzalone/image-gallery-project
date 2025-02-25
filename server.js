@@ -7,6 +7,8 @@ const methodOverride = require('method-override');
 const morgan = require('morgan');
 const session = require('express-session');
 const Image = require('./models/image.js');
+const passUserToView = require("./middleware/pass-user-to-view.js")
+const isSignedIn = require("./middleware/is-signed-in.js")
 
 const authController = require('./controllers/auth.js');
 const postController = require('./controllers/user.js');
@@ -44,8 +46,10 @@ app.get('/search', (req, res) => {
 
 
 
+app.use(passUserToView);
 app.use('/auth', authController);
-app.use('/users/:userId/posts', iserController);
+app.use(isSignedIn);
+app.use('/users/:userId/posts', postController);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);

@@ -6,6 +6,12 @@
   <title>Document</title>
 </head>
 <body>
+  <%- include('../partials/_navbar.ejs') %>
+  <% if (redirect ?? 0) { %> <%- include('../partials/redirected.ejs') %> <% } %>
   <h1>new</h1>
+  <form action="/users/<%= user._id %>/posts" method="POST">
+    <input type="text" name="url" id="url">
+    <button type="submit">submit</button>
+  </form>
 </body>
 </html>
