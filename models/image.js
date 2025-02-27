@@ -6,7 +6,7 @@ const imageSchema = mongoose.Schema({
   notes: String,
   tags: [String],
   artist: String,
-  uploader: String,
+  uploader: mongoose.ObjectId,
   uploadDate: { type: Date, set: d => new Date(d) } // epoch time
 });
 

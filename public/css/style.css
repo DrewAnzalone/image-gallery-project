@@ -1,0 +1,15 @@
+.image-grid {
+    display: flex;
+}
+
+.image {
+    border: 1px solid black;
+    max-width: 150px;
+    max-height: 150px;
+    margin: .25rem;
+}
+
+.image img {
+    height: 100%;
+    width: 100%;
+}

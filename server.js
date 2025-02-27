@@ -2,6 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const express = require('express');
 const app = express();
+const path = require("path");
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const morgan = require('morgan');
@@ -9,7 +10,7 @@ const session = require('express-session');
 const Image = require('./models/image.js');
 const passUserToView = require("./middleware/pass-user-to-view.js")
 const isSignedIn = require("./middleware/is-signed-in.js")
-
+const publicController = require('./controllers/publicUser.js');
 const authController = require('./controllers/auth.js');
 const postController = require('./controllers/user.js');
 
@@ -21,6 +22,7 @@ mongoose.connection.on('connected', () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
+app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 app.use(morgan('dev'));
@@ -32,9 +34,12 @@ app.use(
   })
 );
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+  const allImages = await Image.find({});
+  console.log(allImages)
   res.render('index.ejs', {
     user: req.session.user,
+    images: allImages
   });
 });
 
@@ -42,12 +47,11 @@ app.get('/search', (req, res) => {
   const query = req.query.tags;
   console.log(query)
   res.redirect("/")
-})
-
-
+});
 
 app.use(passUserToView);
 app.use('/auth', authController);
+app.use("/users/:userId/posts", publicController)
 app.use(isSignedIn);
 app.use('/users/:userId/posts', postController);
 
