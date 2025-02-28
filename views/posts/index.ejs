@@ -8,6 +8,7 @@
 <body>
   <%- include('../partials/_navbar.ejs') %>
   <h1>index</h1>
-  <a href="/users/<%= user._id %>/posts/new">Upload Post</a>
+  <!-- if verified, upload post -->
+  <a href="/users/<%= user._id %>/new">Upload Post</a>
 </body>
 </html>

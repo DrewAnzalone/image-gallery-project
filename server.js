@@ -12,7 +12,7 @@ const passUserToView = require("./middleware/pass-user-to-view.js")
 const isSignedIn = require("./middleware/is-signed-in.js")
 const publicController = require('./controllers/publicUser.js');
 const authController = require('./controllers/auth.js');
-const postController = require('./controllers/user.js');
+const privateController = require('./controllers/user.js');
 
 const port = process.env.PORT ? process.env.PORT : '3000';
 
@@ -34,27 +34,48 @@ app.use(
   })
 );
 
+// Turns a csv-like string into a complex mongoose query for finding documents
+// If the string is falsy or only contains falsy elements (i.e. "  , ") then the returned query is {}
+function processToQuery(req) {
+  const tags = req.query?.tags ?? '';
+  const processedSearchTerms = tags.split(",").map(tag => tag.trim()).filter(e => e);
+
+  const query = processedSearchTerms.length ?
+    {
+      $and: processedSearchTerms.map(val => ({
+        $or: [
+          { title: { $regex: val, $options: 'i' } },
+          { notes: { $regex: val, $options: 'i' } },
+          { artist: { $regex: val, $options: 'i' } },
+          { tags: { $in: [val] } }
+        ]
+      }))
+    } :
+    {};
+
+  return query;
+}
+
 app.get('/', async (req, res) => {
-  const allImages = await Image.find({});
-  console.log(allImages)
-  res.render('index.ejs', {
-    user: req.session.user,
-    images: allImages
+  res.render('home.ejs', {
+    user: req.session.user
   });
 });
 
-app.get('/search', (req, res) => {
-  const query = req.query.tags;
-  console.log(query)
-  res.redirect("/")
+app.get('/index/search', async (req, res) => {
+  const query = processToQuery(req);
+
+  const images = await Image.find(query);
+  res.render("index.ejs", { user: req.session.user, images });
 });
 
 app.use(passUserToView);
 app.use('/auth', authController);
-app.use("/users/:userId/posts", publicController)
+app.use("/posts", publicController)
 app.use(isSignedIn);
-app.use('/users/:userId/posts', postController);
+app.use('/users', privateController);
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
 });
+
