@@ -38,10 +38,10 @@ app.use(
 // If the string is falsy or only contains falsy elements (i.e. "  , ") then the returned query is {}
 function processToQuery(req) {
   const tags = req.query?.tags ?? '';
-  const processedSearchTerms = tags.split(",").map(tag => tag.trim()).filter(e => e);
+  const processedSearchTerms = tags.split(",").map(tag => tag.trim().toLowerCase()).filter(e => e);
 
   const query = processedSearchTerms.length ?
-    {
+    { // This query was written with the help of AI
       $and: processedSearchTerms.map(val => ({
         $or: [
           { title: { $regex: val, $options: 'i' } },
