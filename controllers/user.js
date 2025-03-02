@@ -1,12 +1,24 @@
 const express = require('express');
 const router = express.Router();
+const processTags = (req) => req.body.tags.split(",").map(tag => tag.trim().toLowerCase()).filter(e => e);
 
-// const User = require('../models/user.js');
+const User = require('../models/user.js');
 const Image = require('../models/image.js');
+
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 //! /users
 router.get('/:userId/', async (req, res) => {
-  const uid = req.session.user?.id;
+  const uid = req.session.user?._id;
   if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}`); }
 
   const userImages = await Image.find({ uploader: uid });
@@ -14,14 +26,14 @@ router.get('/:userId/', async (req, res) => {
 });
 
 router.get("/:userId/new", (req, res) => { // async?
-  const uid = req.session.user?.id;
+  const uid = req.session.user?._id;
   if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}`); }
 
   res.render("posts/new.ejs");
 });
 
 router.get("/:userId/:imageId/edit", async (req, res) => {
-  const uid = req.session.user?.id;
+  const uid = req.session.user?._id;
   if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}/${req.params.imageId}`); }
 
   const image = await Image.findById(req.params.imageId);
@@ -29,23 +41,29 @@ router.get("/:userId/:imageId/edit", async (req, res) => {
 });
 
 router.get("/:userId/:imageId", async (req, res) => {
-  const uid = req.session.user?.id;
+  const uid = req.session.user?._id;
   if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}/${req.params.imageId}`); }
 
-  const image = await Image.findById(req.params.imageId);
+  const dbImage = await Image.findById(req.params.imageId);
+  const uploader = await User.findById(dbImage.uploader);
+  const image = {...dbImage._doc};
+
+  image.uploadDate = formatDate(image.uploadDate);
+  image.uploaderId = image.uploader;
+  image.uploader = uploader.username;
   res.render("posts/show.ejs", { image, verified: true });
 });
 
 //? POST routes
 router.post("/:userId/", async (req, res) => {
-  const uid = req.session.user?.id;
+  const uid = req.session.user?._id;
   if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}`); }
 
   const valid = await checkImage(req.body.url);
   if (!valid) { return res.redirect(`/users/${uid}/new`); }
 
-  req.body.tags = req.body.tags.split(",").map(tag => tag.trim());
-  req.body["uploader"] = req.session.user.id;
+  req.body.tags = processTags(req);
+  req.body["uploader"] = req.session.user._id;
   req.body["uploadDate"] = Date.now();
   req.body.artist = req.body.artist || "Unknown";
   // console.log(req.body)
@@ -54,8 +72,23 @@ router.post("/:userId/", async (req, res) => {
 });
 
 //? PUT routes
-//edit
-// router.put();
+router.put("/:userId/:imageId", async (req, res) => {
+  const uid = req.session.user?._id;
+  if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}/${req.params.imageId}`); }
+
+  req.body.tags = processTags(req);
+  await Image.findByIdAndUpdate(req.params.imageId, req.body);
+  return res.redirect(`/users/${uid}/${req.params.imageId}`);
+});
+
+//? DELETE routes
+router.delete("/:userId/:imageId", async (req, res) => {
+  const uid = req.session.user?._id;
+  if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}/${req.params.imageId}`); }
+  
+  await Image.findByIdAndDelete(req.params.imageId);
+  res.redirect(`/users/${uid}`);
+});
 
 
 //* helper method
