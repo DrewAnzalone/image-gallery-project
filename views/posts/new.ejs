@@ -4,31 +4,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>New Post</title>
 </head>
 
 <body>
   <%- include('../partials/_navbar.ejs') %>
-  <h1>new</h1>
-  <form action="/users/<%= user._id %>/posts" method="POST">
-    <div><p></p></div>
-    <label for="url">Image URL:</label>
-    <input type="text" name="url" id="url" placeholder="example.com/image.jpg"/>
-    <div><p></p></div>
-    <label for="title">Title:</label>
-    <input type="text" name="title" id="title" />
-    <div><p></p></div>
-    <label for="notes">Notes:</label>
-    <input type="text" name="notes" id="notes" />
-    <div><p></p></div>
-    <label for="tags">Tags:</label>
-    <input type="text" name="tags" id="tags" placeholder="tag1, tag2, tag3"/>
-    <div><p></p></div>
-    <label for="artist">Artist:</label>
-    <input type="text" name="artist" id="artist" />
-    <div><p></p></div>
-    <button type="submit">Upload Post</button>
-  </form>
-</body>
+  <div class="margin">
+    <h1>Create New Image</h1>
+    <form class="narrow" action="/users/<%= user._id %>" method="POST">
+      <div>
+        <label for="url">Image URL:</label>
+        <input type="text" name="url" id="url" placeholder="example.com/image.jpg" />
+      </div>
+      <div>
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" />
+      </div>
+      <div>
+        <label for="notes">Notes:</label>
+        <input type="text" name="notes" id="notes" />
+      </div>
+      <div>
+        <label for="tags">Tags:</label>
+        <input type="text" name="tags" id="tags" placeholder="tag1, tag2, tag3" />
+      </div>
+      <div>
+        <label for="artist">Artist:</label>
+        <input type="text" name="artist" id="artist" />
+      </div>
+      <button type="submit">Upload Post</button>
+    </form>
+  </div>
+</body
 
 </html>

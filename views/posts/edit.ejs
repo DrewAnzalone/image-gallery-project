@@ -1,12 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Edit Post</title>
 </head>
+
 <body>
   <%- include('../partials/_navbar.ejs') %>
-  <h1>edit</h1>
+  <div class="edit-wrapper">
+    <div class="margin border-right">
+      <label for="url">Image:</label>
+      <input class="readonly" type="text" name="url" value="<%= image.url %>" readonly="true" disabled>
+      <div><p></p></div>
+      <form action="/users/<%= user._id %>/<%= image._id %>?_method=PUT" method="POST">
+        <div>
+          <label for="title">Title:</label>
+          <input type="text" name="title" id="title" value="<%= image.title %>" />
+        </div>
+        <div>
+          <label for="notes">Notes:</label>
+          <input type="text" name="notes" id="notes" value="<%= image.notes %>" />
+        </div>
+        <div>
+          <label for="tags">Tags:</label>
+          <input type="text" name="tags" id="tags" value="<%= image.tags %>" />
+        </div>
+        <div>
+          <label for="artist">Artist:</label>
+          <input type="text" name="artist" id="artist" value="<%= image.artist %>" />
+        </div>
+        <div>
+          <button type="submit">Update Post</button>
+      </form>
+    </div>
+  </div>
+  <div>
+    <img class="image-large" src="<%= image.url %>" alt="<%= image.title %>">
+  </div>
+  </div>
 </body>
+
 </html>

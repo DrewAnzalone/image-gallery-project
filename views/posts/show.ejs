@@ -1,14 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>View Post</title>
 </head>
+
 <body>
   <%- include('../partials/_navbar.ejs') %>
-  <h1>show</h1>
-  <!-- show image -->
-  <!-- if verified, show edit -->
+  <div class="content-wrapper">
+    <div class="title">
+      <h2><%= image.title %></h2>
+    </div>
+    <div class="metadata-wrapper border-right">
+      <div class="tags">
+        <p>Tags:</p>
+          <% image.tags.forEach(tag => { %>
+          <a href="/index/search?tags=<%= tag %>"><%= tag %></a>
+          <% }); %>
+      </div>
+      <div class="artist">
+        <p>Artist:</p>
+        <a href="/index/search?tags=<%= image.artist %>"><%= image.artist %></a>
+      </div>
+      <div class="uploaded">
+        <p>Posted:</p>
+        <%= image.uploadDate %>
+      </div>
+      <div class="uploader">
+        <p>Uploader:</p>
+        <a href="/posts/<%= image.uploaderId %>"><%= image.uploader %></a>
+      </div>
+      <% if (verified) { %>
+      <div class="options">
+        <p>Options:</p>
+        <a href="/users/<%= image.uploaderId %>/<%= image._id %>/edit">
+          <button type="submit">Edit</button>
+        </a>
+        <form onsubmit="return confirm('Are you sure you want to delete?')" action="/users/<%= image.uploader %>/<%= image._id %>?_method=DELETE" method="POST">
+          <button type="submit">Delete</button>
+        </form>
+      </div>
+      <% } %>
+    </div>
+    <img class="image-large" src="<%= image.url %>" alt="<%= image.title %>">
+    <div class="description">
+      <p><%= image.notes %></p>
+    </div>
+  </div>
 </body>
+
 </html>

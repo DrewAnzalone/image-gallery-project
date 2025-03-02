@@ -4,24 +4,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../css/style.css" />
-  <title>Home Page</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Search</title>
 </head>
 
 <body>
   <%- include('./partials/_navbar.ejs') %>
-  <h1>Image Board</h1>
-  <form action="search" method="GET">
-    <input name="tags" type="text" placeholder="Search e.g.: Trees">
-    <input name="commit" type="submit" value="Search">
-  </form>
+  <div class="search-bar">
+    <form action="search" method="GET">
+      <input class="search-box" name="tags" type="text" placeholder="Search e.g.: Trees">
+      <input name="commit" type="submit" value="Search">
+    </form>
+  </div>
   <div class="image-grid">
     <% images.forEach(image => { %>
+    <div>
       <div class="image">
         <a href="/posts/<%= image.uploader %>/<%= image._id %>">
-          <img src="<%= image.url %>" alt="<%= image.title %>" >
+          <img src="<%= image.url %>" alt="<%= image.title %>">
         </a>
       </div>
+    </div>
     <% }); %>
   </div>
 </body>
