@@ -35,15 +35,15 @@
       </div>
       <div class="uploader">
         <p>Uploader:</p>
-        <a href="/posts/<%= image.uploaderId %>"><%= image.uploader %></a>
+        <a href="/users/<%= image.uploader %>"><%= image.uploader %></a>
       </div>
       <% if (verified) { %>
       <div class="options">
         <p>Options:</p>
-        <a href="/users/<%= image.uploaderId %>/<%= image._id %>/edit">
+        <a href="/users/<%= image.uploader %>/<%= image._id %>/edit">
           <button type="submit">Edit</button>
         </a>
-        <form onsubmit="return confirm('Are you sure you want to delete?')" action="/users/<%= image.uploaderId %>/<%= image._id %>?_method=DELETE" method="POST">
+        <form onsubmit="return confirm('Are you sure you want to delete?')" action="/users/<%= image.uploader %>/<%= image._id %>?_method=DELETE" method="POST">
           <button type="submit">Delete</button>
         </form>
       </div>

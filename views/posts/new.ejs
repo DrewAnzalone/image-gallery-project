@@ -13,7 +13,7 @@
   <div class="margin">
     <button onclick="history.back()"><< Go Back</button>
     <h1>Create New Image</h1>
-    <form class="narrow" action="/users/<%= user._id %>" method="POST">
+    <form class="narrow" action="/users/<%= user.username %>" method="POST">
       <div>
         <label for="url">Image URL:</label>
         <input type="text" name="url" id="url" placeholder="example.com/image.jpg" />

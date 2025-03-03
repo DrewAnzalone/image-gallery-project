@@ -13,14 +13,14 @@
   <div class="margin">
     <button onclick="history.back()"><< Go Back</button>
     <% if (verified) { %>
-      <a class="link-button" href="/users/<%= user._id %>/new"><button>Upload Post</button></a>
+      <a class="link-button" href="/users/<%= user.username %>/new"><button>Upload Post</button></a>
     <% } %>
     <h1><%= username %> Posts</h1>
   </div>
   <div class="image-grid margin">
     <% images.forEach(image => { %>
     <div class="image">
-      <a href="/posts/<%= image.uploader %>/<%= image._id %>">
+      <a href="/users/<%= image.uploader %>/<%= image._id %>">
         <img src="<%= image.url %>" alt="<%= image.title %>">
       </a>
     </div>

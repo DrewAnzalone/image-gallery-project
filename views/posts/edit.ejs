@@ -16,7 +16,7 @@
       <label for="url">Image:</label>
       <input class="readonly" type="text" name="url" value="<%= image.url %>" readonly="true" disabled>
       <div><p></p></div>
-      <form action="/users/<%= user._id %>/<%= image._id %>?_method=PUT" method="POST">
+      <form action="/users/<%= user.username %>/<%= image._id %>?_method=PUT" method="POST">
         <div>
           <label for="title">Title:</label>
           <input type="text" name="title" id="title" value="<%= image.title %>" />
