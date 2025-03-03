@@ -24,7 +24,7 @@ router.get('/:userId/', async (req, res) => {
   }
   const userImages = await Image.find({ uploader: req.params.userId });
   const user = await User.findById(userImages[0].uploader);
-  res.render('posts/index.ejs', { images: userImages, username: user.username+"'s", verified: false });
+  res.render('posts/index.ejs', { images: userImages.toReversed(), username: user.username+"'s", verified: false });
 });
 
 router.get("/:userId/:imageId", async (req, res) => {

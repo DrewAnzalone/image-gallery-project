@@ -66,7 +66,7 @@ app.get('/index/search', async (req, res) => {
   const query = processToQuery(req);
 
   const images = await Image.find(query);
-  res.render("index.ejs", { user: req.session.user, images });
+  res.render("index.ejs", { user: req.session.user, images: images.toReversed() });
 });
 
 app.use(passUserToView);

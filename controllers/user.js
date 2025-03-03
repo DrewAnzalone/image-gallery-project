@@ -22,7 +22,7 @@ router.get('/:userId/', async (req, res) => {
   if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}`); }
 
   const userImages = await Image.find({ uploader: uid });
-  res.render('posts/index.ejs', { images: userImages, username: "My", verified: true });
+  res.render('posts/index.ejs', { images: userImages.toReversed(), username: "My", verified: true });
 });
 
 router.get("/:userId/new", (req, res) => { // async?
