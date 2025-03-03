@@ -43,7 +43,7 @@
         <a href="/users/<%= image.uploaderId %>/<%= image._id %>/edit">
           <button type="submit">Edit</button>
         </a>
-        <form onsubmit="return confirm('Are you sure you want to delete?')" action="/users/<%= image.uploader %>/<%= image._id %>?_method=DELETE" method="POST">
+        <form onsubmit="return confirm('Are you sure you want to delete?')" action="/users/<%= image.uploaderId %>/<%= image._id %>?_method=DELETE" method="POST">
           <button type="submit">Delete</button>
         </form>
       </div>
