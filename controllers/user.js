@@ -66,7 +66,7 @@ router.post("/:userId/", async (req, res) => {
   req.body["uploader"] = req.session.user._id;
   req.body["uploadDate"] = Date.now();
   req.body.artist = req.body.artist || "Unknown";
-  // console.log(req.body)
+
   const image = await Image.create(req.body);
   return res.redirect(`/users/${uid}/${image._id}`);
 });
