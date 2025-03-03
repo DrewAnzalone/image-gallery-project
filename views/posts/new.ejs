@@ -11,6 +11,7 @@
 <body>
   <%- include('../partials/_navbar.ejs') %>
   <div class="margin">
+    <button onclick="history.back()"><< Go Back</button>
     <h1>Create New Image</h1>
     <form class="narrow" action="/users/<%= user._id %>" method="POST">
       <div>
