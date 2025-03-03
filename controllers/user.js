@@ -1,4 +1,5 @@
 const express = require('express');
+const isSignedIn = require("./middleware/is-signed-in.js")
 const router = express.Router();
 const processTags = (req) => req.body.tags.split(",").map(tag => tag.trim().toLowerCase()).filter(e => e);
 
@@ -17,12 +18,17 @@ function formatDate(date) {
 }
 
 //! /users
-router.get('/:userId/', async (req, res) => {
-  const uid = req.session.user?._id;
-  if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}`); }
-
+router.get('/:username/', async (req, res) => {
   const userImages = await Image.find({ uploader: uid });
-  res.render('posts/index.ejs', { images: userImages.toReversed(), username: "My", verified: true });
+  const user = User.find({ username: req.params.username });
+  const images = userImages.toReversed();
+  res.render('posts/index.ejs', { images, username: req.params.username+"'s", verified: false });
+  
+  user.then((result) => {
+    const verified = req.session.user?._id === result._id;
+    const username = verified ? "My" : result.username+"'s";
+    res.render('posts/index.ejs', { images, username, verified });
+  })
 });
 
 router.get("/:userId/new", (req, res) => { // async?
@@ -46,7 +52,7 @@ router.get("/:userId/:imageId", async (req, res) => {
 
   const dbImage = await Image.findById(req.params.imageId);
   const uploader = await User.findById(dbImage.uploader);
-  const image = {...dbImage._doc};
+  const image = { ...dbImage._doc };
 
   image.uploadDate = formatDate(image.uploadDate);
   image.uploaderId = image.uploader;
@@ -63,7 +69,7 @@ router.post("/:userId/", async (req, res) => {
   if (!valid) { return res.redirect(`/users/${uid}/new`); }
 
   req.body.tags = processTags(req);
-  req.body["uploader"] = req.session.user._id;
+  req.body["uploader"] = req.session.user.username;
   req.body["uploadDate"] = Date.now();
   req.body.artist = req.body.artist || "Unknown";
 
@@ -85,7 +91,7 @@ router.put("/:userId/:imageId", async (req, res) => {
 router.delete("/:userId/:imageId", async (req, res) => {
   const uid = req.session.user?._id;
   if (uid !== req.params.userId) { return res.redirect(`/posts/${req.params.userId}/${req.params.imageId}`); }
-  
+
   await Image.findByIdAndDelete(req.params.imageId);
   res.redirect(`/users/${uid}`);
 });
